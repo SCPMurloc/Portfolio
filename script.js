@@ -1,532 +1,171 @@
-//////////////////////////////////////////////////////////////
-// Gameplay Programmer Portfolio
-// script.js
-//////////////////////////////////////////////////////////////
+// ======================================
+// Smooth Scrolling
+// ======================================
 
+document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
 
-/* =========================
-   CUSTOM CURSOR
-   ========================= */
+    anchor.addEventListener("click", function(e){
 
-const cursor = document.getElementById("cursor");
+        e.preventDefault();
 
-if(cursor){
+        const target = document.querySelector(this.getAttribute("href"));
 
-    document.addEventListener("mousemove",(e)=>{
+        if(target){
 
-        cursor.style.left = e.clientX + "px";
-        cursor.style.top = e.clientY + "px";
+            target.scrollIntoView({
+
+                behavior:"smooth"
+
+            });
+
+        }
 
     });
 
+});
 
-    const hoverElements =
-        document.querySelectorAll(
-            "a, button, .project, .skill, .timeline-item"
-        );
+// ======================================
+// Reveal Animation
+// ======================================
 
+const revealElements = document.querySelectorAll(
 
-    hoverElements.forEach(element=>{
+    ".glass, .project-card, section h2"
 
-        element.addEventListener(
-            "mouseenter",
-            ()=>{
+);
 
-                cursor.classList.add(
-                    "cursor-hover"
-                );
+const observer = new IntersectionObserver(entries => {
 
-            }
-        );
+    entries.forEach(entry => {
 
+        if(entry.isIntersecting){
 
-        element.addEventListener(
-            "mouseleave",
-            ()=>{
+            entry.target.classList.add("show");
 
-                cursor.classList.remove(
-                    "cursor-hover"
-                );
-
-            }
-        );
+        }
 
     });
 
-}
+},{
 
+    threshold:0.15
 
+});
 
-/* =========================
-   HERO PARTICLE CANVAS
-   ========================= */
+revealElements.forEach(element => {
 
-const canvas =
-    document.getElementById(
-        "hero-canvas"
-    );
+    element.classList.add("hidden");
 
+    observer.observe(element);
 
-if(canvas){
+});
 
-    const ctx =
-        canvas.getContext("2d");
+// ======================================
+// Navbar Background
+// ======================================
 
+const navbar = document.querySelector("nav");
 
-    let width;
-    let height;
+window.addEventListener("scroll",()=>{
 
+    if(window.scrollY > 50){
 
-    let particles=[];
-
-
-    function resize(){
-
-        width =
-            canvas.width =
-            window.innerWidth;
-
-
-        height =
-            canvas.height =
-            window.innerHeight;
+        navbar.classList.add("nav-scrolled");
 
     }
 
+    else{
 
-    window.addEventListener(
-        "resize",
-        resize
-    );
-
-
-    resize();
-
-
-
-    class Particle{
-
-        constructor(){
-
-            this.x =
-                Math.random()*width;
-
-
-            this.y =
-                Math.random()*height;
-
-
-            this.size =
-                Math.random()*2+0.5;
-
-
-            this.speedX =
-                (Math.random()-.5)*0.4;
-
-
-            this.speedY =
-                (Math.random()-.5)*0.4;
-
-
-            this.alpha =
-                Math.random()*.5+.1;
-
-        }
-
-
-        update(){
-
-            this.x += this.speedX;
-
-            this.y += this.speedY;
-
-
-            if(this.x < 0)
-                this.x = width;
-
-
-            if(this.x > width)
-                this.x = 0;
-
-
-            if(this.y < 0)
-                this.y = height;
-
-
-            if(this.y > height)
-                this.y = 0;
-
-        }
-
-
-        draw(){
-
-            ctx.beginPath();
-
-            ctx.arc(
-                this.x,
-                this.y,
-                this.size,
-                0,
-                Math.PI*2
-            );
-
-
-            ctx.fillStyle =
-                `rgba(67,229,255,${this.alpha})`;
-
-
-            ctx.fill();
-
-        }
+        navbar.classList.remove("nav-scrolled");
 
     }
 
+});
 
+// ======================================
+// Hero Parallax
+// ======================================
 
-    function createParticles(){
+const hero = document.querySelector(".hero");
 
-        particles=[];
+window.addEventListener("mousemove",(e)=>{
 
+    if(window.innerWidth < 900) return;
 
-        const amount =
-            Math.min(
-                120,
-                window.innerWidth/8
-            );
+    const x = (e.clientX/window.innerWidth-.5)*20;
 
+    const y = (e.clientY/window.innerHeight-.5)*20;
 
-        for(
-            let i=0;
-            i<amount;
-            i++
+    hero.style.transform =
+
+        `translate(${x}px,${y}px)`;
+
+});
+
+// ======================================
+// Active Navigation
+// ======================================
+
+const sections = document.querySelectorAll("section");
+
+const navLinks = document.querySelectorAll("nav ul li a");
+
+window.addEventListener("scroll",()=>{
+
+    let current = "";
+
+    sections.forEach(section=>{
+
+        const top = section.offsetTop - 120;
+
+        const height = section.clientHeight;
+
+        if(scrollY >= top){
+
+            current = section.getAttribute("id");
+
+        }
+
+    });
+
+    navLinks.forEach(link=>{
+
+        link.classList.remove("active");
+
+        if(
+
+            link.getAttribute("href") == "#" + current
+
         ){
 
-            particles.push(
-                new Particle()
-            );
+            link.classList.add("active");
 
         }
 
-    }
+    });
 
+});
 
-    createParticles();
+// ======================================
+// Button Hover Glow
+// ======================================
 
+document.querySelectorAll(".primary,.secondary,.project-button")
 
-    function connectParticles(){
+.forEach(button=>{
 
-        for(
-            let a=0;
-            a<particles.length;
-            a++
-        ){
+    button.addEventListener("mousemove",e=>{
 
-            for(
-                let b=a;
-                b<particles.length;
-                b++
-            ){
+        const rect = button.getBoundingClientRect();
 
-                const dx =
-                    particles[a].x -
-                    particles[b].x;
+        const x = e.clientX - rect.left;
 
+        const y = e.clientY - rect.top;
 
-                const dy =
-                    particles[a].y -
-                    particles[b].y;
+        button.style.setProperty("--x",x+"px");
 
+        button.style.setProperty("--y",y+"px");
 
-                const distance =
-                    Math.sqrt(
-                        dx*dx+
-                        dy*dy
-                    );
+    });
 
-
-                if(distance < 120){
-
-                    ctx.beginPath();
-
-
-                    ctx.strokeStyle =
-                    `rgba(
-                        67,
-                        229,
-                        255,
-                        ${0.08-distance/1500}
-                    )`;
-
-
-                    ctx.lineWidth=.5;
-
-
-                    ctx.moveTo(
-                        particles[a].x,
-                        particles[a].y
-                    );
-
-
-                    ctx.lineTo(
-                        particles[b].x,
-                        particles[b].y
-                    );
-
-
-                    ctx.stroke();
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-
-    function animate(){
-
-        ctx.clearRect(
-            0,
-            0,
-            width,
-            height
-        );
-
-
-        particles.forEach(
-            particle=>{
-
-                particle.update();
-
-                particle.draw();
-
-            }
-        );
-
-
-        connectParticles();
-
-
-        requestAnimationFrame(
-            animate
-        );
-
-    }
-
-
-    animate();
-
-}
-
-
-
-/* =========================
-   SCROLL REVEAL
-   ========================= */
-
-
-const revealElements =
-    document.querySelectorAll(
-        "section, .project, .skill, .timeline-item"
-    );
-
-
-revealElements.forEach(
-    element=>{
-
-        element.classList.add(
-            "reveal"
-        );
-
-    }
-);
-
-
-
-const observer =
-    new IntersectionObserver(
-        entries=>{
-
-            entries.forEach(
-                entry=>{
-
-                    if(entry.isIntersecting){
-
-                        entry.target.classList.add(
-                            "active"
-                        );
-
-                    }
-
-                }
-            );
-
-        },
-        {
-            threshold:.15
-        }
-    );
-
-
-
-revealElements.forEach(
-    element=>{
-
-        observer.observe(
-            element
-        );
-
-    }
-);
-
-
-
-
-/* =========================
-   TERMINAL TEXT EFFECT
-   ========================= */
-
-
-const terminal =
-    document.querySelector(
-        ".terminal pre"
-    );
-
-
-if(terminal){
-
-    const original =
-        terminal.innerHTML;
-
-
-    terminal.innerHTML="";
-
-
-    let index=0;
-
-
-    function type(){
-
-        if(index <
-            original.length
-        ){
-
-            terminal.innerHTML +=
-                original[index];
-
-
-            index++;
-
-
-            setTimeout(
-                type,
-                18
-            );
-
-        }
-
-    }
-
-
-    setTimeout(
-        type,
-        800
-    );
-
-}
-
-
-
-/* =========================
-   ACTIVE NAVIGATION
-   ========================= */
-
-
-const sections =
-    document.querySelectorAll(
-        "section"
-    );
-
-
-const navLinks =
-    document.querySelectorAll(
-        "nav a"
-    );
-
-
-
-window.addEventListener(
-    "scroll",
-    ()=>{
-
-
-        let current="";
-
-
-        sections.forEach(
-            section=>{
-
-
-                const top =
-                    section.offsetTop - 200;
-
-
-                if(
-                    scrollY >= top
-                ){
-
-                    current =
-                    section.id;
-
-                }
-
-
-            }
-        );
-
-
-
-        navLinks.forEach(
-            link=>{
-
-                link.style.color =
-                    "";
-
-
-                if(
-                    link.getAttribute("href")
-                    === "#"+current
-                ){
-
-                    link.style.color =
-                        "#43E5FF";
-
-                }
-
-            }
-        );
-
-
-    }
-);
-
-
-
-/* =========================
-   PAGE LOAD EFFECT
-   ========================= */
-
-
-window.addEventListener(
-    "load",
-    ()=>{
-
-        document.body.classList.add(
-            "loaded"
-        );
-
-    }
-);
+});
