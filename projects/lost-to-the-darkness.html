@@ -87,6 +87,24 @@
             </a>
 
         </li>
+        <li>
+
+            <a href="#gallery">
+
+                Gallery
+
+            </a>
+
+        </li>
+        <li>
+
+            <a href="#git">
+
+                GitHub
+
+            </a>
+
+        </li>
 
     </ul>
 
@@ -98,7 +116,7 @@
 
         <span class="subtitle">
 
-            Unity • Gameplay Programmer • C#
+            Unity • C#
 
         </span>
 
@@ -111,10 +129,8 @@
         <p>
 
             A first-person horror game built around
-            dynamic enemy AI,
-            light mechanics,
-            environmental storytelling
-            and reusable gameplay systems.
+            dynamic enemy AI and
+            light mechanics.
 
         </p>
 
@@ -132,34 +148,44 @@ Overview
 
 <div class="glass">
 
-<p>
+    <p>
 
-Lost to the Darkness is a first-person horror game that creates tension
-through light, sound and enemy behaviour instead of scripted events.
+        Lost to the Darkness is a first-person horror game that is build around the dread and tension of constantly being hunted by a relentless enemy.
+        The player must navigate through dark environments, using light to survive and uncover the story behind the darkness.
 
-During the project I was responsible for:
 
-</p>
+    </p>
+    <p>
+        The game is currently in development and is being created by a team of 5 people. The project has been ongoing for 4 months.
+    </p>
 
-<div class="skills">
-
-<span>Enemy AI</span>
-
-<span>Game Architecture</span>
-
-<span>Interaction System</span>
-
-<span>Event System</span>
-
-<span>Audio System</span>
-
-<span>Lighting</span>
-
-<span>VFX</span>
-
-<span>Post Processing</span>
 
 </div>
+
+<div class="glass">
+    <p>
+
+        <strong>During the process I was responsible for:</strong>
+
+    </p>
+
+    <div class="glass">
+
+        <p>Enemy AI</p>
+
+        <p>Core Mechanics</p>
+
+        <p>Game Architecture</p>
+
+        <p>Interaction System</p>
+
+        <p>Lighting</p>
+
+        <p>VFX</p>
+
+        <p>Post Processing</p>
+
+    </div>
 
 </div>
 
@@ -175,14 +201,7 @@ Gameplay Trailer
 
 <div class="glass">
 
-    <iframe width="100%"
-            height="600"
-            src="https://youtube.com"
-            title="Lost to The Darkness Demo Trailer"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen>
-    </iframe>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/G2rOr3u37Co?si=YfqCR4HEjmKwa41X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 </div>
 
@@ -190,66 +209,157 @@ Gameplay Trailer
 
 <section id="ai">
 
-<h2>
+    <h2>
 
-Enemy AI
+        Enemy AI
 
-</h2>
+    </h2>
 
-<div class="project-card">
+    <div class="project-card">
 
-<div class="project-image">
+        <div class="project-image">
 
-<img
+            <img src="../assets/AIStateMachine.png"
+                 alt="Enemy State Machine">
 
-src="../assets/ai_state_machine.png"
+        </div>
 
-alt="Enemy State Machine">
+        <div class="project-content">
 
-</div>
+            <h3>
 
-<div class="project-content">
+                State Machine
 
-<h3>
+            </h3>
 
-State Machine
+            <p>
+                Consists of 6 states:
 
-</h3>
+            </p>
 
-<p>
+            <ul>
 
-Describe the enemy behaviour.
+                <li>Idle</li>
 
-Explain each state,
-what transitions exist,
-and why you chose a finite state machine.
+                <li>GetToPlayer</li>
 
-Mention things such as:
+                <li>Surround</li>
 
-</p>
+                <li>Attack</li>
 
-<ul>
+                <li>Freeze</li>
 
-<li>Player detection</li>
+                <li>Escape</li>
 
-<li>Surround behaviour</li>
+            </ul>
 
-<li>Reaction to light</li>
+        </div>
 
-<li>Navigation</li>
+        <div class="glass">
+            <p>
+                <strong> Idle </strong>
+            </p>
+            <p>
+                At the start of the level enemies are instantiated on the platform and are in the Idle state.
+                They cannot act, NavMeshAgent is disabled, and they are not visible to the player.
+            </p>
+        </div>
+        <div class="glass">
+            <p>
+                <strong> GetToPlayer </strong>
+            </p>
+            <p>
+                Triggered by spawner when initiated. Enemies have higher speed and move towards the player directly.
+                If enemies enter the Radius around player, they will switch to the Surround state.
+            </p>
+        </div>
+        <div class="glass">
+            <p>
+                <strong> Surround </strong>
+            </p>
+            <p>
+                In this state, enemies choose one of 12 segments on the Radius around the player and move to it. They will remain in this position relative to the player.
+                During this state, enemies will change their position, potentially closing distance to the player. If they are close enough, they will get the chance to enter the Attack state.
+                If the enemy is observed by the player, it will enter the Freeze state. If the enemy leaves the Radius, it will switch back to GetToPlayer state.
+            </p>
+        </div>
+        <div class="glass">
+            <p>
+                <strong> Freeze </strong>
+            </p>
+            <p>
+                Can be entered from surround or attack states. Enemy will stop moving and will not be able to attack the player. If the player looks away, the enemy will switch back to previous state.
+                While observed, the enemy starts a timer, and if it is observed for too long, it will enter the Attack state and enable running.
+                If the enemy is running it is not affected by the Freeze state.
+            </p>
+        </div>
+        <div class="glass">
+            <p>
+                <strong> Attack </strong>
+            </p>
+            <p>
+                The enemy starts to move directly towards the player. If it is observed by the player, it will enter the Freeze state.
+                Enables "attacking".
+                The Attack state is permanent and enemy will not reenter Surround state again.
+            </p>
+        </div>
+        <div class="glass">
+            <p>
+                <strong> Escape </strong>
+            </p>
+            <p>
+                When hit by player light and not in Idle state, the enemy choses closest of spawnpoints and moves towards it. If it reaches the spawnpoint, it will switch back to Idle state and teleport out.
+            </p>
+        </div>
+    </div>
 
-<li>Searching</li>
+</section>
 
-<li>Retreat</li>
+<section>
+    <div class="project-card">
 
-<li>Attack conditions</li>
+        <div class="project-image">
 
-</ul>
+            <img src="../assets/SegmentsDiagram.png"
+                 alt="Enemy State Machine">
 
-</div>
+        </div>
+        <div class="project-content">
 
-</div>
+            <h3>
 
+                Choice of position
+
+            </h3>
+
+            <p>
+                The available positions are divided into four quarters which are divided into 3 segments each. First time, enemy chooses position closest to it without difficult calculations.
+                Every other time it calculates allowed positions and chooses one randomly.
+            </p>
+            <p>
+                <strong>Positions are calculated based on the following rules:</strong>
+            </p>
+            <p>
+                1. If the segment is occupied by another enemy, it is not allowed.
+            </p>
+            <p>
+                2. If the segment is in player vision, it is not allowed.
+            </p>
+            <p>
+                3. Are there any quarters that have less enemies than current quarter? If yes, only those quarters are allowed.
+            </p>
+            <p>
+                4. From segments of the allowed quarters, are there any segments within reach? If yes, choose random from those segments. Else, choose random segment from current quarter.
+            </p>
+            <p>
+                5. If there are no allowed segments, stay in place.
+            </p>
+            <p>
+                This system allows for dynamic enemy behavior, without the need for complex calculations or pathfinding.
+            </p>
+
+        </div>
+    </div>
 </section>
 
 <section id="architecture">
@@ -266,7 +376,7 @@ Architecture
 
 <img
 
-src="../assets/architecture.png"
+src="../assets/ArchitectureDiagram.png"
 
 alt="Architecture">
 
@@ -282,24 +392,12 @@ Game Architecture
 
 <p>
 
-Explain why you separated
-
-Game Manager,
-
-Level Managers,
-
-Enemy Manager,
-
-Interaction System
-
-and Event System.
-
-Talk about responsibilities,
-
-dependencies
-
-and communication.
-
+    The core principle of the architecture is to divide responsibilities between GameManager and LevelManagers.
+    GameManager is a singleton responsible for changing game states and triggering save and load of the game inside SaveSystem.
+    LevelManagers are responsible for managing their own level and its components. They are created and destroyed with the level, and they can communicate with GameManager to change game states or trigger events.
+    EventManager is a singleton that acts as a radio station, allowing different components to communicate with each other without direct references. It is used to trigger events and notify subscribers about changes in the game state.
+    UI Manager consists of multiple UI components that comunicate with each other and with GameManager to display information to the player and receive input from them.
+    SaveSystem is a singleton that tracks and rewrites saved data, handling it to the DataConverter to convert it to and from JSON format. It is responsible for saving and loading the game state, including player progress, level states, and other relevant data.
 </p>
 
 </div>
@@ -320,32 +418,26 @@ Interaction System
 
 <h3>
 
-Reusable Interaction Framework
+Interaction Framework
 
 </h3>
 
 <p>
-
-Explain:
-
+    This game consists of multiple puzzles, does not feature inventory system, and has a limited number of interactable objects. Therefore, the interaction system is designed to be simple and efficient, allowing the player to interact with objects in the environment without unnecessary complexity.
+    All objects are based on Interface with two methods: Interact and OnView. Interact method is called when the player interacts with the object, and OnView method is called when the player looks at the object. 
 </p>
 
-<ul>
+<p>
+    There are two types of objects in the interaction system: reciever, sender.
+    Reciever is the bigger object which counts how many senders are interacting with it. It can be a puzzle, a door, or any other object that requires multiple interactions to be completed.
+    Sender is the smaller object which can be interacted with by the player. It can be a button, a lever, or any other object that can trigger an interaction with a reciever.
+</p>
 
-<li>Raycasting</li>
-
-<li>Interfaces</li>
-
-<li>Interactables</li>
-
-<li>Reusable components</li>
-
-<li>Events</li>
-
-<li>Extensibility</li>
-
-</ul>
-
+<p>
+    Reciever and sender both have a string id assigned to them in the inspector. When a sender is interacted with, it sends signal to the reciever with the same id. The reciever counts how many senders are interacting with it, and when the count reaches a certain threshold, it triggers an event or action.
+</p>
+<p>
+    Recievers can also be senders themselves, allowing for more complex interactions and puzzles.
 </div>
 
 </section>
@@ -354,7 +446,7 @@ Explain:
 
 <h2>
 
-Technical Breakdown
+Technical Breakdown Videos
 
 </h2>
 
@@ -379,7 +471,7 @@ and implementation.
 
 class="project-button"
 
-href="https://youtu.be/YOUR_AI_VIDEO"
+href="https://youtu.be/xAkPl9MlbTk"
 
 target="_blank">
 
@@ -408,7 +500,7 @@ and gameplay mechanics.
 
 class="project-button"
 
-href="https://youtu.be/YOUR_FLAME_VIDEO"
+href="https://youtu.be/sUosHnnWPDw"
 
 target="_blank">
 
@@ -424,37 +516,68 @@ Watch →
 
 <section>
 
-<h2>
+    <h2>
 
-Full Gameplay
+        Full Gameplay (Demo)
 
-</h2>
+    </h2>
 
-<div class="glass">
+    <div class="glass">
 
-<p>
+        <p>
 
-Complete 28-minute playthrough.
+            Complete 28-minute playthrough.
 
-</p>
+        </p>
 
-<a
+        <a class="project-button"
+           href="https://youtu.be/1kkIF3KKq-w"
+           target="_blank">
 
-class="project-button"
+            Watch Full Gameplay
 
-href="https://youtu.be/YOUR_FULL_PLAYTHROUGH"
+        </a>
 
-target="_blank">
-
-Watch Full Gameplay
-
-</a>
-
-</div>
+    </div>
 
 </section>
 
-<section>
+<section id="gallery">
+    <h2>
+        Gallery
+    </h2>
+
+    <div class="project-card">
+        <div class="project-image">
+            <img src="../assets/Gal1.png"
+                 alt="Gallery Image 1">
+        </div>
+        <div class="project-image">
+            <img src="../assets/Gal2.png"
+                 alt="Gallery Image 2">
+        </div>
+        <div class="project-image">
+            <img src="../assets/Gal3.png"
+                 alt="Gallery Image 3">
+        </div>
+        <div class="project-image">
+            <img src="../assets/Chort.png"
+                 alt="Gallery Image 4">
+        </div>
+        <div class="project-image">
+            <img src="../assets/Gal4.png"
+                 alt="Gallery Image 3">
+        </div>
+        <div class="project-image">
+            <img src="../assets/Gal5.png"
+                 alt="Gallery Image 4">
+        </div>
+    </div>
+  
+
+</section>
+
+<section id="git">
 
 <h2>
 
@@ -476,7 +599,7 @@ and representative code examples.
 
 class="project-button"
 
-href="https://github.com/YOUR_USERNAME/lost-to-the-darkness"
+href="https://github.com/SCPMurloc/Lost-To-The-Darkness-Demo-"
 
 target="_blank">
 
