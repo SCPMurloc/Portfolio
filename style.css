@@ -345,6 +345,34 @@ section h2{
 }
 
 /* =========================
+   PROFILE PICTURE
+========================= */
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.profile-pic {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(96, 165, 250, 0.4);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.profile-text {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #94A3B8;
+    text-align: center;
+}
+
+/* =========================
    SKILLS
 ========================= */
 
@@ -464,6 +492,8 @@ section h2{
    CONTACT
 ========================= */
 
+
+
 .contact{
 
     display:flex;
@@ -472,7 +502,19 @@ section h2{
 
     flex-wrap:wrap;
 
+    margin-top: 25px
+
 }
+
+.contact p {
+
+    width: 100%; 
+
+    margin-bottom: 5px; 
+
+}
+
+
 
 .contact a{
 
